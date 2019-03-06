@@ -1,4 +1,10 @@
-.App {
-  margin: 1rem;
-  font-family: Arial, Helvetica, sans-serif;
+.Row {
+  display: inline-block;
+}
+
+.Field {
+  width: 36px;
+  height: 36px;
+  transition: background-image 200ms;
+  margin-top: -3px;
 }
