@@ -11,40 +11,55 @@ class App extends Component{
     super()
     this.fields = []
     this.bombs = []
+    this.clicked = []
     this.firstClick = true
     this.gameRunning = true
     this.restartBtn
     this.box
+    this.timer
   }
 
   restart() {
     this.fields = []
     this.bombs = []
+    this.clicked = []
     this.firstClick = true
     this.gameRunning = true
     window.location.reload(); 
   }
+
+  arrayRemove(arr, value) {
+    return arr.filter(function(ele){
+        return ele != value;
+    });
+ }
 
   handleClick(index, flag, intern) {
     if (this.gameRunning && this.fields[index] && index >= 0) {
       if (this.firstClick) {
         for (var y = 0; y < bombs; y++) this.setBomb(0, width*height, index)
         this.firstClick = false
+        new Promise(() => {
+          this.startTimer()
+        })
       }
       if (intern) this.fields[index].className = this.fields[index].className.replace(" Flagged", '');
       if (!this.fields[index].className.includes('Revealed') && flag) {
         if (this.fields[index].className.includes('Flagged')) {
           this.fields[index].src = `images/field.png`
           this.fields[index].className = this.fields[index].className.replace(" Flagged", '');
+          this.arrayRemove(this.clicked, index)
         } else {
           this.fields[index].src = `images/flag.png`
           this.fields[index].className += " Flagged"
+          this.clicked.push(index)
         }
       } else if (this.bombs.includes(index) && !this.fields[index].className.includes('Flagged')) {
         this.showBombs()
         this.gameRunning = false
         this.restartBtn.style.opacity = "1"
       } else if(!this.fields[index].className.includes('Revealed') && !this.fields[index].className.includes('Flagged')) {
+        this.clicked.push(index)
         const count = this.countBombs(index)
         this.fields[index].src = `images/numeric-${count}-box.png`
         this.fields[index].className += " Revealed"
@@ -60,7 +75,12 @@ class App extends Component{
           this.handleClick(this.getIndex(i+1, x+1, false, true))
         }
       }
+      if (this.clicked.length === this.fields.length) this.win()
     }
+  }
+
+  win() {
+    this.gameRunning = false
   }
 
   countBombs(index) {
@@ -148,6 +168,14 @@ class App extends Component{
     }
   }
 
+  startTimer() {
+    this.timer.innerHTML = Number(this.timer.innerHTML)+1
+    setTimeout(() => {
+      if (this.gameRunning)
+        this.startTimer();
+    }, 1000)
+  }
+
   componentDidMount() {
     if (this.gameRunning) this.restartBtn.style.opacity = "0"
     this.box.style.width = `${width*36}px`
@@ -162,6 +190,7 @@ class App extends Component{
           <div ref={box => this.box = box}>
             {this.renderField()}
             <button onClick={() => this.restart()} ref={btn => this.restartBtn = btn}>Restart</button>
+            <h1 ref={h => this.timer = h}>0</h1>
           </div>
         </center>
       </div>
