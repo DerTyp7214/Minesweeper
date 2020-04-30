@@ -1,9 +1,18 @@
 import React, { Component} from "react";
 import "./App.css";
 
-const width = 30
-const height = 20
-const bombs = 1
+const Config = require('../config.json');
+const Theme = require(`../themes/${Config.theme || 'default'}.json`);
+
+let { width, height, bombs } = Config
+const { fieldImage, flagImage, bombImage, flagImageCorrect, numberImage } = Theme
+
+function getPathData() {
+  const path = (window.location.href.split('?')[1] || '').split('&')
+  return path.map(item => {
+    return {key: item.split('=')[0], value: item.split('=')[1]}
+  })
+}
 
 class App extends Component{
 
@@ -17,6 +26,21 @@ class App extends Component{
     this.restartBtn
     this.box
     this.timer
+
+    getPathData().forEach(data => {
+      console.warn(data);
+      switch (data.key) {
+        case 'bombs':
+          bombs = Number(data.value)
+          break;
+        case 'width':
+          width = Number(data.value)
+          break;
+        case 'height':
+          height = Number(data.value)
+          break;
+      }
+    })
   }
 
   restart() {
@@ -25,7 +49,7 @@ class App extends Component{
     this.clicked = []
     this.firstClick = true
     this.gameRunning = true
-    window.location.reload(); 
+    window.location.reload();
   }
 
   arrayRemove(arr, value) {
@@ -46,11 +70,11 @@ class App extends Component{
       if (intern) this.fields[index].className = this.fields[index].className.replace(" Flagged", '');
       if (!this.fields[index].className.includes('Revealed') && flag) {
         if (this.fields[index].className.includes('Flagged')) {
-          this.fields[index].src = `images/field.png`
+          this.fields[index].src = fieldImage
           this.fields[index].className = this.fields[index].className.replace(" Flagged", '');
           this.arrayRemove(this.clicked, index)
         } else {
-          this.fields[index].src = `images/flag.png`
+          this.fields[index].src = flagImage
           this.fields[index].className += " Flagged"
           this.clicked.push(index)
         }
@@ -61,7 +85,7 @@ class App extends Component{
       } else if(!this.fields[index].className.includes('Revealed') && !this.fields[index].className.includes('Flagged')) {
         this.clicked.push(index)
         const count = this.countBombs(index)
-        this.fields[index].src = `images/numeric-${count}-box.png`
+        this.fields[index].src = numberImage.replace('{count}', count)
         this.fields[index].className += " Revealed"
         if (count === 0) {
           const {i, x} = this.getPos(index)
@@ -81,6 +105,7 @@ class App extends Component{
 
   win() {
     this.gameRunning = false
+    this.showBombs()
   }
 
   countBombs(index) {
@@ -106,7 +131,7 @@ class App extends Component{
   getIndex(i, x, debug) {
     try {
       if (x < 0 || x >= width || i < 0 || i >= height) return null
-      return i*width+x >= 0 ? i*width+x : null 
+      return i*width+x >= 0 ? i*width+x : null
     } catch(e) {
       return null
     }
@@ -116,9 +141,9 @@ class App extends Component{
     this.fields.forEach((item, index) => {
       if (this.bombs.includes(index)) {
         if (item.className.includes('Flagged')) {
-          this.fields[index].src = "images/flag-correct.png"
+          this.fields[index].src = flagImageCorrect
         } else {
-          this.fields[index].src = "images/bomb.png"
+          this.fields[index].src = bombImage
         }
       }
     })
@@ -131,7 +156,7 @@ class App extends Component{
       for (var x = 0; x < width; x++) {
         const index = i*width+x
         row[x] = <img
-          src="images/field.png"
+          src={fieldImage}
           className="Field"
           onContextMenu={e => {
             e.preventDefault();
@@ -189,8 +214,8 @@ class App extends Component{
         <center>
           <div ref={box => this.box = box}>
             {this.renderField()}
-            <button onClick={() => this.restart()} ref={btn => this.restartBtn = btn}>Restart</button>
             <h1 ref={h => this.timer = h}>0</h1>
+            <button onClick={() => this.restart()} ref={btn => this.restartBtn = btn}>Restart</button>
           </div>
         </center>
       </div>

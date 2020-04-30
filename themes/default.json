@@ -1,0 +1,7 @@
+{
+  "fieldImage": "images/field.png",
+  "flagImage": "images/flag.png",
+  "bombImage": "images/bomb.png",
+  "flagImageCorrect": "images/flag-correct.png",
+  "numberImage": "images/numeric-{count}-box.png"
+}
