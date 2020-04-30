@@ -27,6 +27,8 @@ class App extends Component{
     this.box
     this.timer
 
+    document.body.style.background = Theme.background
+
     getPathData().forEach(data => {
       console.warn(data);
       switch (data.key) {
@@ -214,7 +216,7 @@ class App extends Component{
         <center>
           <div ref={box => this.box = box}>
             {this.renderField()}
-            <h1 ref={h => this.timer = h}>0</h1>
+            <h1 style={{color: Theme.font}} ref={h => this.timer = h}>0</h1>
             <button onClick={() => this.restart()} ref={btn => this.restartBtn = btn}>Restart</button>
           </div>
         </center>

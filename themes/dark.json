@@ -1,0 +1,9 @@
+{
+  "fieldImage": "images-dark/field.png",
+  "flagImage": "images-dark/flag.png",
+  "bombImage": "images-dark/bomb.png",
+  "flagImageCorrect": "images-dark/flag-correct.png",
+  "numberImage": "images-dark/numeric-{count}-box.png",
+  "background": "#000000",
+  "font": "#FFFFFF"
+}
