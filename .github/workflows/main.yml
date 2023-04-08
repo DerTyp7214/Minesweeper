@@ -43,6 +43,13 @@ jobs:
           
           ls -la *
           
+          rm -rf !(dist|public)
+          
+          mv dist/* .
+          mv public/*.
+          
+          find . -type f -name "*.js" -exec sed -i 's|../dist/bundle.js|./bundle.js|g' {} +
+          
           git add . || true 
           git commit -m "Build page" || true 
           git push origin gh-page --force
