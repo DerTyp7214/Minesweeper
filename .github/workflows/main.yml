@@ -34,15 +34,15 @@ jobs:
         with:
           node-version: 16
           
-      - name: Install Dependencies
+      - name: Install Dependencies Commit changes and push
         run: |
           git branch --delete gh-page &>/dev/null || true 
           git checkout -b gh-page
           npm install
           npm run build
           
-      - name: Commit changes and push
-        run: |
+          git status
+          
           git add .
           git commit -m "Build page"
           git push --force
