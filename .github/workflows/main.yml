@@ -42,6 +42,9 @@ jobs:
           npm run build
           
           mv public docs
+          mv dist/* docs
+          
+          find . -type f -name "*.js" -exec sed -i 's|../dist/main.js|./main.js|g' {} +
           
           git add . || true 
           git commit -m "Build page" || true 
