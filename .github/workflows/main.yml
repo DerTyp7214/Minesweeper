@@ -41,14 +41,7 @@ jobs:
           npm install
           npm run build
           
-          ls -la *
-          
-          rm -rf !(dist|public)
-          
-          mv dist/* .
-          mv public/*.
-          
-          find . -type f -name "*.js" -exec sed -i 's|../dist/bundle.js|./bundle.js|g' {} +
+          mv public docs
           
           git add . || true 
           git commit -m "Build page" || true 
