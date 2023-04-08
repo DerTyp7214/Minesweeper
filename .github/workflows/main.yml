@@ -36,6 +36,8 @@ jobs:
           
       - name: Install Dependencies
         run: |
+          git branch --delete gh-page
+          git checkout -b gh-page
           npm install
           npm run build
           
@@ -43,4 +45,4 @@ jobs:
         run: |
           git add .
           git commit -m "Build page"
-          git push
+          git push --force
