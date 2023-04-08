@@ -36,13 +36,13 @@ jobs:
           
       - name: Install Dependencies Commit changes and push
         run: |
-          git branch --delete gh-page &>/dev/null || true 
+          git branch --delete gh-page || true 
           git checkout -b gh-page
           npm install
           npm run build
           
-          git status
+          ls -la *
           
-          git add .
-          git commit -m "Build page"
-          git push --force
+          git add . || true 
+          git commit -m "Build page" || true 
+          git push origin gh-page --force
